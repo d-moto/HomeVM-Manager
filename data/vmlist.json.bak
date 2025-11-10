@@ -1,16 +1,16 @@
 [
   {
-    "vm_name": "ESXi-HOST",
-    "host_ip": "192.168.24.229",
-    "mac": "b8:ca:3a:ac:22:d9",
+    "vm_name": "RHEL9.4",
+    "host_ip": "192.168.24.194",
+    "mac": "b8:ca:3a:ac:84:f0",
     "method": "SSH",
     "user": "root",
     "type": "physical"
   },
   {
-    "vm_name": "RHEL9.4",
-    "host_ip": "192.168.24.194",
-    "mac": "b8:ca:3a:ac:84:f0",
+    "vm_name": "ESXi-HOST",
+    "host_ip": "192.168.24.229",
+    "mac": "b8:ca:3a:ac:22:d9",
     "method": "SSH",
     "user": "root",
     "type": "physical"

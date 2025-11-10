@@ -38,6 +38,8 @@ class AddVmDialog(QDialog):
         self.ed_host_ip = QLineEdit(self)
         self.cb_method = QComboBox(self)
         self.cb_method.addItems(["SSH", "API"])
+        self.cb_type = QComboBox(self)
+        self.cb_type.addItems(["virtual", "physical"])  # ← 種別選択を追加
         self.ed_user = QLineEdit(self)
 
         form = QFormLayout(self)
@@ -46,6 +48,7 @@ class AddVmDialog(QDialog):
         form.addRow("ホストIP（任意）", self.ed_host_ip)
         form.addRow("方式", self.cb_method)
         form.addRow("ユーザー", self.ed_user)
+        form.addRow("種別", self.cb_type)
 
         self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, parent=self)
         self.buttons.accepted.connect(self._on_accept)
@@ -78,7 +81,8 @@ class AddVmDialog(QDialog):
             QMessageBox.warning(self, "入力エラー", "ユーザーは必須です。")
             return
 
-        self._vm = VM(vm_name=vm_name, host_ip=host_ip or "", mac=mac, method=method, user=user)
+        vm_type = self.cb_type.currentText().strip()
+        self._vm = VM(vm_name=vm_name, host_ip=host_ip or "", mac=mac, method=method, user=user, type=vm_type)
         self.accept()
 
     def get_vm(self) -> VM | None:
@@ -152,12 +156,12 @@ class MainWindow(QMainWindow):
         self.table.setSortingEnabled(False)
         self.table.clearContents()
         self.table.setRowCount(len(self.vms))
-        headers = ["VM名", "ホストIP", "MAC", "方式", "ユーザー", "状態"]
+        headers = ["VM名", "ホストIP", "MAC", "方式", "ユーザー", "種別", "状態"]
         self.table.setColumnCount(len(headers))
         self.table.setHorizontalHeaderLabels(headers)
 
         for row, vm in enumerate(self.vms):
-            values = [vm.vm_name, vm.host_ip or "-", vm.mac, vm.method, vm.user, "取得中..."]
+            values = [vm.vm_name, vm.host_ip or "-", vm.mac, vm.method, vm.user, vm.type, "取得中..."]
             for col, value in enumerate(values):
                 item = QTableWidgetItem(value)
                 item.setFlags(item.flags())
@@ -251,6 +255,10 @@ class MainWindow(QMainWindow):
         vm = self._selected_vm()
         if not vm:
             return
+        
+        if vm.type != "physical":
+            QMessageBox.information(self, "WOL無効", f"{vm.vm_name} は仮想マシンのためWOLをサポートしません。")
+            return
         try:
             send_magic_packet(vm.mac)
             QMessageBox.information(self, "WOL", f"{vm.vm_name}（{vm.mac}）へ送信しました。")
@@ -304,7 +312,7 @@ class MainWindow(QMainWindow):
             else:
                 #ass
                 item.setBackground(QColor(255, 255, 200))  # 黄
-            self.table.setItem(row, 5, item)
+            self.table.setItem(row, 6, item)
 
             logger.info(f"Status updated: {self.vms[row].vm_name} -> {status} ({ip})")
         except Exception as e:
@@ -320,7 +328,7 @@ class MainWindow(QMainWindow):
 
         # --- アクション作成 ---
         act_reload = toolbar.addAction("更新")
-        act_power_on = toolbar.addAction("電源ON")
+        #act_power_on = toolbar.addAction("電源ON")
         act_power_off = toolbar.addAction("電源OFF")
         act_reboot = toolbar.addAction("再起動")
         act_wol = toolbar.addAction("WOL")
@@ -331,7 +339,7 @@ class MainWindow(QMainWindow):
 
         # --- シグナル接続（既存のハンドラを使う） ---
         act_reload.triggered.connect(self.on_reload)
-        act_power_on.triggered.connect(lambda: self._do_power("on"))
+        #act_power_on.triggered.connect(lambda: self._do_power("on"))
         act_power_off.triggered.connect(lambda: self._do_power("off"))
         act_reboot.triggered.connect(lambda: self._do_power("reboot"))
         act_wol.triggered.connect(self._do_wol)
@@ -366,6 +374,8 @@ class MainWindow(QMainWindow):
         # ソート（昇順／降順はQTableWidgetの設定に合わせてもよい）
         self.vms.sort(key=lambda vm: getattr(vm, key_name) or "")
         self.refresh_table()
+
+
 
 
 

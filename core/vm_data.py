@@ -24,6 +24,7 @@ class VM:
     mac: str
     method: str # "SSH" or "API"
     user: str
+    type: str = "virtual" # "virtual" or "physical"
 
     @staticmethod
     def from_dict(d: dict) -> "VM":
@@ -32,7 +33,8 @@ class VM:
             host_ip = d.get("host_ip", ""),
             mac = d.get("mac", ""),
             method = d.get("method", ""),
-            user = d.get("user", "")
+            user = d.get("user", ""),
+            type = d.get("type", "virtual"),
         )
     
     def to_dict(self) -> dict:
@@ -50,7 +52,14 @@ def load_vm_list(path: Path = DATA_FILE) -> List[VM]:
     ensure_data_file(path)
     try:
         raw = json.loads(path.read_text(encoding="utf-8"))
-        return [VM.from_dict(x) for x in raw]
+        vms = [VM.from_dict(x) for x in raw]
+
+        # typeが空のものは自動補完
+        for vm in vms:
+            if not getattr(vm, "type", None):
+                vm.type = "virtual"
+        return vms
+        #return [VM.from_dict(x) for x in raw]
     except Exception:
         # 壊れた場合はバックアップし、空配列で復旧
         bak = path.with_suffix(".json.bak")
