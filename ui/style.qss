@@ -1,0 +1,82 @@
+/* -------------------------
+   HomeVM Manager Style
+   ------------------------- */
+
+/* 全体 */
+QWidget {
+    background-color: #f5f7fa;
+    font-family: "Yu Gothic UI", "Segoe UI", "Meiryo";
+    font-size: 10pt;
+    color: #222;
+    margin: 4px;
+}
+
+/* ボタン */
+QPushButton {
+    background-color: #0078D7;
+    color: white;
+    border-radius: 4px;
+    padding: 4px 8px;
+    min-height: 26px;
+    font-size: 9.5pt;
+}
+QPushButton:hover {
+    background-color: #0064B0;
+}
+QPushButton:pressed {
+    background-color: #004E8C;
+}
+
+/* ステータスバー */
+QStatusBar {
+    background-color: #e9ecf1;
+    color: #555;
+}
+
+/* テーブル */
+QHeaderView::section {
+    background: linear-gradient(to bottom, #1976d2, #1565c0);
+    color: white;
+    font-weight: bold;
+    padding: 4px;
+    border: none;
+}
+QTableWidget {
+    background: #fff;
+    gridline-color: #e0e0e0;
+    alternate-background-color: #fafafa;
+    selection-background-color: #e3f2fd;
+    selection-color: #000;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+QTableWidget QTableCornerButton::section {
+    background-color: #0078D7;
+}
+QToolBar {
+    background: #f0f2f5;
+    spacing: 6px;
+    border: none;
+    padding: 6px;
+}
+
+QToolButton {
+    background: #0078D7;
+    color: white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-weight: 500;
+}
+QToolButton:hover {
+    background: #005fa3;
+}
+QMainWindow {
+    background-color: #f4f6f9;
+}
+QGroupBox {
+    background-color: white;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    margin-top: 8px;
+    padding: 6px;
+}

@@ -1,0 +1,126 @@
+/* =========================================
+   HomeVM Manager - Modern QSS Theme
+   ========================================= */
+
+/* ベース背景 */
+QMainWindow {
+    background-color: #f3f5f7;
+}
+
+/* 全体共通フォント */
+QWidget {
+    font-family: "Yu Gothic UI", "Segoe UI", "Meiryo";
+    font-size: 10pt;
+    color: #1e1e1e;
+}
+
+/* ---- ツールバー風ボタン ---- */
+QPushButton {
+    background-color: #0078D7;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 12px;
+    font-weight: 500;
+    border: none;
+}
+QPushButton:hover {
+    background-color: #0064b0;
+}
+QPushButton:pressed {
+    background-color: #004e8c;
+}
+QPushButton:disabled {
+    background-color: #c8d1da;
+    color: #7a7a7a;
+}
+
+/* ---- ステータスバー ---- */
+QStatusBar {
+    background-color: #e9ecf1;
+    color: #555;
+    border-top: 1px solid #ccc;
+}
+
+/* ---- テーブル ---- */
+QTableWidget {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    gridline-color: #e0e0e0;
+    selection-background-color: #e3f2fd;
+    selection-color: #000000;
+    alternate-background-color: #fafafa;
+}
+
+/* 見出し */
+QHeaderView::section {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #0078D7, stop:1 #005A9E);
+    color: white;
+    font-weight: bold;
+    padding: 6px;
+    border: none;
+    border-right: 1px solid #004b87;
+}
+QHeaderView::section:horizontal {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+/* ---- テーブル角ボタン ---- */
+QTableWidget QTableCornerButton::section {
+    background-color: #0078D7;
+    border: none;
+}
+QTableWidget::item:hover {
+    background-color: #eaf3ff;
+}
+
+/* ---- GroupBoxなど ---- */
+QGroupBox {
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 6px;
+}
+
+/* ---- スクロールバー ---- */
+QScrollBar:vertical {
+    border: none;
+    background: #f1f1f1;
+    width: 10px;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical {
+    background: #c0c0c0;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #a0a0a0;
+}
+/* ---- ツールバー ---- */
+QToolBar {
+    background: #f3f5f7;
+    spacing: 6px;
+    padding: 4px 8px;
+    border: none;
+}
+
+QToolButton {
+    background-color: #0078D7;
+    color: white;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-weight: 500;
+}
+QToolButton:hover {
+    background-color: #0064b0;
+}
+QToolButton:pressed {
+    background-color: #004e8c;
+}
+QToolButton:disabled {
+    background-color: #c8d1da;
+    color: #7a7a7a;
+}

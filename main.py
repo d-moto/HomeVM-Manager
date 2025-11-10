@@ -11,8 +11,8 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QDialog, QFormLayout, QLineEdit, QComboBox,
     QDialogButtonBox, QMessageBox, QTableWidgetItem, QInputDialog
 )
-from PyQt5.QtCore import QMetaObject, Qt, QTimer
-from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QMetaObject, Qt, QTimer, QSize
+from PyQt5.QtGui import QColor, QIcon
 from functools import partial
 
 from core.vm_data import VM, load_vm_list, save_vm_list, DATA_FILE
@@ -104,6 +104,9 @@ class MainWindow(QMainWindow):
         self.btnWOL      = self.findChild(QtWidgets.QPushButton, "btnWOL")
         self.status = self.statusBar()
 
+        # --- ツールバー作成 ---
+        self.setup_toolbar()
+
         # --- 内部状態 ---
         self.vms: List[VM] = []
         self._pass_cache: Dict[str, str] = {}
@@ -124,7 +127,14 @@ class MainWindow(QMainWindow):
 
         # --- 初期ロードとステータス監視 ---
         self.load_and_refresh()
+        self.table.horizontalHeader().sectionClicked.connect(self.on_table_sort)
         self.start_status_monitor()
+
+        # --- ウィンドウ設定 ---
+        style_path = Path(__file__).resolve().parent / "ui" / "style_modern.qss"
+        if style_path.exists():
+            with open(style_path, "r", encoding="utf-8") as f:
+                self.setStyleSheet(f.read())
 
     # ====== データI/O ======
     def load_and_refresh(self):
@@ -299,6 +309,64 @@ class MainWindow(QMainWindow):
             logger.info(f"Status updated: {self.vms[row].vm_name} -> {status} ({ip})")
         except Exception as e:
             logger.error(f"UI update failed: {e}")
+
+    def setup_toolbar(self):
+        """上部ツールバーの作成と旧ボタンの非表示"""
+
+        toolbar = QtWidgets.QToolBar("MainToolbar", self)
+        toolbar.setIconSize(QSize(16, 16))
+        toolbar.setMovable(False)
+        self.addToolBar(toolbar)
+
+        # --- アクション作成 ---
+        act_reload = toolbar.addAction("更新")
+        act_power_on = toolbar.addAction("電源ON")
+        act_power_off = toolbar.addAction("電源OFF")
+        act_reboot = toolbar.addAction("再起動")
+        act_wol = toolbar.addAction("WOL")
+        toolbar.addSeparator()
+        act_add = toolbar.addAction("追加")
+        act_delete = toolbar.addAction("削除")
+        act_save = toolbar.addAction("保存")
+
+        # --- シグナル接続（既存のハンドラを使う） ---
+        act_reload.triggered.connect(self.on_reload)
+        act_power_on.triggered.connect(lambda: self._do_power("on"))
+        act_power_off.triggered.connect(lambda: self._do_power("off"))
+        act_reboot.triggered.connect(lambda: self._do_power("reboot"))
+        act_wol.triggered.connect(self._do_wol)
+        act_add.triggered.connect(self.on_add)
+        act_delete.triggered.connect(self.on_delete)
+        act_save.triggered.connect(self.on_save)
+
+        # --- 既存のボタンは非表示にする（レイアウト崩れ防止） ---
+        for btn in (
+            self.btnAdd, self.btnDelete, self.btnSave,
+            self.btnReload, self.btnPowerOn, self.btnPowerOff,
+            self.btnReboot, self.btnWOL
+        ):
+            if btn is not None:
+                btn.hide()
+    
+    def on_table_sort(self, column_index):
+        """テーブルのソート後に内部データを同期"""
+        # 列インデックスとVM属性の対応
+        COL_MAP = {
+            0: "vm_name",
+            1: "host_ip",
+            2: "mac",
+            3: "method",
+            4: "user"
+        }
+
+        key_name = COL_MAP.get(column_index)
+        if not key_name:
+            return
+
+        # ソート（昇順／降順はQTableWidgetの設定に合わせてもよい）
+        self.vms.sort(key=lambda vm: getattr(vm, key_name) or "")
+        self.refresh_table()
+
 
 
 
