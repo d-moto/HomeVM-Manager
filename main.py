@@ -6,19 +6,29 @@ import time
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple, Callable
 
-from PyQt5 import QtWidgets, uic
-from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QDialog, QFormLayout, QLineEdit, QComboBox,
-    QDialogButtonBox, QMessageBox, QTableWidgetItem, QInputDialog
-)
-from PyQt5.QtCore import QMetaObject, Qt, QTimer, QSize
-from PyQt5.QtGui import QColor, QIcon
+# from PyQt5 import QtWidgets, uic
+# from PyQt5.QtWidgets import (
+#     QApplication, QMainWindow, QDialog, QFormLayout, QLineEdit, QComboBox,
+#     QDialogButtonBox, QMessageBox, QTableWidgetItem, QInputDialog
+# )
+# from PyQt5.QtCore import QMetaObject, Qt, QTimer, QSize
+# from PyQt5.QtGui import QColor, QIcon
 from functools import partial
 
 from core.vm_data import VM, load_vm_list, save_vm_list, DATA_FILE
 from core.vm_control import send_magic_packet, SshClient, power_action_unified
 from core.vm_info import resolve_status
 from core.logger import get_logger
+
+from PyQt6 import QtWidgets, uic
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QDialog, QFormLayout, QLineEdit, QComboBox,
+    QDialogButtonBox, QMessageBox, QTableWidgetItem, QInputDialog
+)
+from PyQt6.QtCore import QMetaObject, Qt, QTimer, QSize
+from PyQt6.QtGui import QColor, QIcon
+
+
 
 logger = get_logger("homevm")
 
@@ -50,7 +60,10 @@ class AddVmDialog(QDialog):
         form.addRow("ユーザー", self.ed_user)
         form.addRow("種別", self.cb_type)
 
-        self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, parent=self)
+        #self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, parent=self)
+        self.buttons = QDialogButtonBox(
+    QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel, parent=self
+)
         self.buttons.accepted.connect(self._on_accept)
         self.buttons.rejected.connect(self.reject)
         form.addRow(self.buttons)
@@ -172,7 +185,8 @@ class MainWindow(QMainWindow):
     # ====== ボタンハンドラ ======
     def on_add(self):
         dlg = AddVmDialog(self)
-        if dlg.exec_() == QDialog.Accepted:
+        #if dlg.exec_() == QDialog.Accepted:
+        if dlg.exec() == QDialog.DialogCode.Accepted:
             new_vm = dlg.get_vm()
             if new_vm:
                 if any(v.vm_name == new_vm.vm_name for v in self.vms):
@@ -190,7 +204,8 @@ class MainWindow(QMainWindow):
             return
         vm_name = self.table.item(row, 0).text() if self.table.item(row, 0) else "(不明)"
         ret = QMessageBox.question(self, "確認", f"選択中のVM '{vm_name}' を削除しますか？")
-        if ret == QMessageBox.Yes:
+        #if ret == QMessageBox.Yes:
+        if ret == QMessageBox.StandardButton.Yes:
             logger.info(f"VM removed: {vm_name}")
             del self.vms[row]
             self.refresh_table()
@@ -384,7 +399,8 @@ def main():
     app = QApplication(sys.argv)
     w = MainWindow()
     w.show()
-    return app.exec_()
+    #return app.exec_()
+    return app.exec()
 
 
 if __name__ == "__main__":
