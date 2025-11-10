@@ -1,0 +1,30 @@
+[
+  {
+    "vm_name": "RHEL9.4",
+    "host_ip": "192.168.24.194",
+    "mac": "b8:ca:3a:ac:84:f0",
+    "method": "SSH",
+    "user": "root"
+  },
+  {
+    "vm_name": "ESXi-HOST",
+    "host_ip": "192.168.24.229",
+    "mac": "b8:ca:3a:ac:22:d9",
+    "method": "SSH",
+    "user": "root"
+  },
+  {
+    "vm_name": "RHEL94-1_ESXiVM",
+    "host_ip": "192.168.24.199",
+    "mac": "00:0c:29:d2:59:32",
+    "method": "SSH",
+    "user": "root"
+  },
+  {
+    "vm_name": "Win11-1_ESXiVM",
+    "host_ip": "192.168.24.220",
+    "mac": "00:0c:29:3b:cb:25",
+    "method": "API",
+    "user": "x8864572@outlook.jp"
+  }
+]

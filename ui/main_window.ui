@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindowUI</class>
+ <widget class="QMainWindow" name="MainWindowUI">
+  <property name="windowTitle">
+   <string>HomeVM Manager - Phase 1 (GUI + JSON)</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="vboxRoot">
+    <item>
+     <layout class="QHBoxLayout" name="hboxButtons">
+      <item>
+       <widget class="QPushButton" name="btnReload">
+        <property name="text">
+         <string>更新</string>
+        </property>
+        <property name="toolTip">
+         <string>JSONを読み直して一覧を更新</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="spacer1">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnAdd">
+        <property name="text">
+         <string>追加</string>
+        </property>
+        <property name="toolTip">
+         <string>新しいVMを追加</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnDelete">
+        <property name="text">
+         <string>削除</string>
+        </property>
+        <property name="toolTip">
+         <string>選択行を削除</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSave">
+        <property name="text">
+         <string>保存</string>
+        </property>
+        <property name="toolTip">
+         <string>現在の一覧をJSONに保存</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+
+    <item>
+     <widget class="QPushButton" name="btnPowerOn">
+      <property name="text">
+       <string>電源ON</string>
+      </property>
+      <property name="toolTip">
+       <string>ESXiへSSHして power.on</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnPowerOff">
+      <property name="text">
+       <string>電源OFF</string>
+      </property>
+      <property name="toolTip">
+       <string>ESXiへSSHして power.off（ハード）</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnReboot">
+      <property name="text">
+       <string>再起動</string>
+      </property>
+      <property name="toolTip">
+       <string>ESXiへSSHして power.reset（ハード）</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnWOL">
+      <property name="text">
+       <string>WOL</string>
+      </property>
+      <property name="toolTip">
+       <string>MACへマジックパケット送信</string>
+      </property>
+     </widget>
+    </item>
+
+    <item>
+     <widget class="QTableWidget" name="tableVMs">
+      <property name="columnCount">
+       <number>5</number>
+      </property>
+      <property name="rowCount">
+       <number>0</number>
+      </property>
+      <column>
+       <property name="text">
+        <string>VM名</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>ホストIP</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>MAC</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>方式</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>ユーザー</string>
+       </property>
+      </column>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
