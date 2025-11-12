@@ -222,9 +222,12 @@ class MainWindow(QMainWindow):
         """SSH接続パスワード取得（キャッシュ）"""
         if host_ip in self._pass_cache:
             return self._pass_cache[host_ip]
-        pw, ok = QInputDialog.getText(self, "SSHパスワード入力",
-                                      f"{host_ip} のパスワードを入力してください",
-                                      echo=QLineEdit.Password)
+        pw, ok = QInputDialog.getText(
+            self,
+            "SSHパスワード入力",
+            f"{host_ip} のパスワードを入力してください",
+            echo=QLineEdit.EchoMode.Password
+            )
         if not ok or not pw:
             raise RuntimeError("パスワード未入力")
         self._pass_cache[host_ip] = pw
