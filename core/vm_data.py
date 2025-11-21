@@ -8,21 +8,12 @@ from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 DATA_FILE = DATA_DIR / "vmlist.json"
 
-## DEBUG
-print(f"Data file path: {DATA_FILE}")
-print(f"Data directory path: {DATA_DIR}")
-
-print(type(DATA_FILE))
-print(type(DATA_DIR))
-
-## DEBUG
-
 @dataclass
 class VM:
     vm_name:str
     host_ip: str
     mac: str
-    method: str # "SSH" or "API"
+    method: str # "SSH" or "WinRM"
     user: str
     type: str = "virtual" # "virtual" or "physical"
 
@@ -59,7 +50,6 @@ def load_vm_list(path: Path = DATA_FILE) -> List[VM]:
             if not getattr(vm, "type", None):
                 vm.type = "virtual"
         return vms
-        #return [VM.from_dict(x) for x in raw]
     except Exception:
         # 壊れた場合はバックアップし、空配列で復旧
         bak = path.with_suffix(".json.bak")
@@ -75,4 +65,3 @@ def save_vm_list(vms: List[VM], path: Path = DATA_FILE) -> None:
     ensure_data_file(path)
     data = [vm.to_dict() for vm in vms]
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-    

@@ -142,7 +142,7 @@ def power_action_unified(method: str, host: str, user: str, password: str, actio
     if method.upper() == "SSH":
         with SshClient(host, user, password) as cli:
             return cli.power_action(action)
-    elif method.upper() == "API":  # API=WinRMとする
+    elif method.upper() in ("API", "WINRM"):  # API=WinRMとする
         client = WinRMClient(host, user, password)
         return client.power_action(action)
     else:

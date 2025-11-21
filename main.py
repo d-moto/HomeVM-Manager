@@ -6,14 +6,10 @@ import time
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple, Callable
 
-# from PyQt5 import QtWidgets, uic
-# from PyQt5.QtWidgets import (
-#     QApplication, QMainWindow, QDialog, QFormLayout, QLineEdit, QComboBox,
-#     QDialogButtonBox, QMessageBox, QTableWidgetItem, QInputDialog
-# )
-# from PyQt5.QtCore import QMetaObject, Qt, QTimer, QSize
-# from PyQt5.QtGui import QColor, QIcon
+
+import keyring
 from functools import partial
+from datetime import datetime
 
 from core.vm_data import VM, load_vm_list, save_vm_list, DATA_FILE
 from core.vm_control import send_magic_packet, SshClient, power_action_unified
@@ -47,7 +43,7 @@ class AddVmDialog(QDialog):
         self.ed_mac = QLineEdit(self)
         self.ed_host_ip = QLineEdit(self)
         self.cb_method = QComboBox(self)
-        self.cb_method.addItems(["SSH", "API"])
+        self.cb_method.addItems(["SSH", "WinRM"])
         self.cb_type = QComboBox(self)
         self.cb_type.addItems(["virtual", "physical"])  # ← 種別選択を追加
         self.ed_user = QLineEdit(self)
@@ -148,7 +144,7 @@ class MainWindow(QMainWindow):
         self.start_status_monitor()
 
         # --- ウィンドウ設定 ---
-        style_path = Path(__file__).resolve().parent / "ui" / "style_modern.qss"
+        style_path = Path(__file__).resolve().parent / "ui" / "style_cyber.qss"
         if style_path.exists():
             with open(style_path, "r", encoding="utf-8") as f:
                 self.setStyleSheet(f.read())
@@ -169,12 +165,15 @@ class MainWindow(QMainWindow):
         self.table.setSortingEnabled(False)
         self.table.clearContents()
         self.table.setRowCount(len(self.vms))
-        headers = ["VM名", "ホストIP", "MAC", "方式", "ユーザー", "種別", "状態"]
+        headers = ["VM名", "ホストIP", "MAC", "方式", "ユーザー", "種別", "状態", "最終更新"]
         self.table.setColumnCount(len(headers))
         self.table.setHorizontalHeaderLabels(headers)
 
         for row, vm in enumerate(self.vms):
-            values = [vm.vm_name, vm.host_ip or "-", vm.mac, vm.method, vm.user, vm.type, "取得中..."]
+            # API -> WinRM 表記ゆれ吸収
+            method_disp = "WinRM" if vm.method.upper() in ("API", "WINRM") else vm.method
+
+            values = [vm.vm_name, vm.host_ip or "-", vm.mac, method_disp, vm.user, vm.type, "取得中...", "-"]
             for col, value in enumerate(values):
                 item = QTableWidgetItem(value)
                 item.setFlags(item.flags())
@@ -219,18 +218,37 @@ class MainWindow(QMainWindow):
 
     # ====== 電源操作 ======
     def _get_password(self, host_ip: str) -> str:
-        """SSH接続パスワード取得（キャッシュ）"""
+        """SSH/WinRM接続パスワード取得（keyring -> キャッシュ -> 入力）"""
+        # 1. メモリキャッシュ確認
         if host_ip in self._pass_cache:
             return self._pass_cache[host_ip]
+        
+        # 2. keyring確認
+        try:
+            saved_pw = keyring.get_password("HomeVM-Manager", host_ip)
+            if saved_pw:
+                self._pass_cache[host_ip] = saved_pw
+                return saved_pw
+        except Exception as e:
+            logger.warning(f"Keyring access failed: {e}")
+
+        # 3. 入力ダイアログ
         pw, ok = QInputDialog.getText(
             self,
-            "SSHパスワード入力",
-            f"{host_ip} のパスワードを入力してください",
+            "パスワード入力",
+            f"{host_ip} のパスワードを入力してください\n(OSのセキュア領域に保存されます)",
             echo=QLineEdit.EchoMode.Password
             )
         if not ok or not pw:
             raise RuntimeError("パスワード未入力")
+        
+        # 保存
         self._pass_cache[host_ip] = pw
+        try:
+            keyring.set_password("HomeVM-Manager", host_ip, pw)
+        except Exception as e:
+            logger.error(f"Failed to save password to keyring: {e}")
+
         return pw
 
     def _selected_vm(self) -> Optional[VM]:
@@ -323,14 +341,21 @@ class MainWindow(QMainWindow):
             # 状態ごとに色分け
             if status == "稼働中":
                 #pass
-                item.setBackground(QColor(200, 255, 200))  # 緑
+                item.setBackground(QColor(166, 227, 161))  # Pastel Green
+                item.setForeground(QColor(30, 30, 46))     # Dark Text
             elif status == "停止中":
                 #pass
-                item.setBackground(QColor(255, 200, 200))  # 赤
+                item.setBackground(QColor(243, 139, 168))  # Pastel Red
+                item.setForeground(QColor(30, 30, 46))     # Dark Text
             else:
                 #ass
-                item.setBackground(QColor(255, 255, 200))  # 黄
+                item.setBackground(QColor(249, 226, 175))  # Pastel Yellow
+                item.setForeground(QColor(30, 30, 46))     # Dark Text
             self.table.setItem(row, 6, item)
+
+            # 最終更新時刻
+            now_str = datetime.now().strftime("%H:%M:%S")
+            self.table.setItem(row, 7, QTableWidgetItem(now_str))
 
             logger.info(f"Status updated: {self.vms[row].vm_name} -> {status} ({ip})")
         except Exception as e:

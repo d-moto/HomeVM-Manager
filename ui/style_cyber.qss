@@ -1,0 +1,136 @@
+/* =========================================
+   HomeVM Manager - Cyber/Dark Theme
+   ========================================= */
+
+/* ---- 全体設定 ---- */
+QMainWindow, QDialog {
+    background-color: #1e1e2e; /* Dark Navy */
+    color: #cdd6f4;
+}
+
+QWidget {
+    font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 10pt;
+    color: #cdd6f4;
+}
+
+/* ---- ツールバー ---- */
+QToolBar {
+    background: #181825;
+    border-bottom: 1px solid #313244;
+    spacing: 8px;
+    padding: 8px;
+}
+
+QToolButton {
+    background-color: #313244;
+    color: #cdd6f4;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-weight: bold;
+    border: 1px solid #45475a;
+}
+
+QToolButton:hover {
+    background-color: #45475a;
+    border-color: #89b4fa; /* Neon Blue */
+    color: #89b4fa;
+}
+
+QToolButton:pressed {
+    background-color: #585b70;
+    color: #ffffff;
+}
+
+/* ---- 入力フィールド ---- */
+QLineEdit, QComboBox {
+    background-color: #313244;
+    border: 1px solid #45475a;
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #cdd6f4;
+    selection-background-color: #89b4fa;
+}
+
+QLineEdit:focus, QComboBox:focus {
+    border: 1px solid #89b4fa;
+}
+
+QComboBox::drop-down {
+    border: none;
+}
+QComboBox QAbstractItemView {
+    background-color: #313244;
+    border: 1px solid #45475a;
+    selection-background-color: #585b70;
+}
+
+/* ---- テーブル ---- */
+QTableWidget {
+    background-color: #1e1e2e;
+    gridline-color: #313244;
+    border: 1px solid #313244;
+    border-radius: 6px;
+    selection-background-color: #45475a;
+    selection-color: #ffffff;
+    alternate-background-color: #181825;
+}
+
+QHeaderView::section {
+    background-color: #181825;
+    color: #89b4fa;
+    padding: 8px;
+    border: none;
+    border-bottom: 2px solid #89b4fa;
+    font-weight: bold;
+}
+
+QTableCornerButton::section {
+    background-color: #181825;
+    border: none;
+}
+
+/* ---- スクロールバー ---- */
+QScrollBar:vertical {
+    background: #181825;
+    width: 12px;
+    margin: 0px;
+}
+QScrollBar::handle:vertical {
+    background: #45475a;
+    min-height: 20px;
+    border-radius: 6px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #585b70;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+/* ---- ステータスバー ---- */
+QStatusBar {
+    background-color: #181825;
+    color: #a6adc8;
+    border-top: 1px solid #313244;
+}
+
+/* ---- ダイアログボタン ---- */
+QDialogButtonBox QPushButton {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-weight: bold;
+    border: none;
+}
+QDialogButtonBox QPushButton:hover {
+    background-color: #b4befe;
+}
+QDialogButtonBox QPushButton[text="Cancel"] {
+    background-color: #45475a;
+    color: #cdd6f4;
+}
+QDialogButtonBox QPushButton[text="Cancel"]:hover {
+    background-color: #585b70;
+}

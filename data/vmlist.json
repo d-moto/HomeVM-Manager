@@ -30,5 +30,13 @@
     "method": "API",
     "user": "x8864572@outlook.jp",
     "type": "virtual"
+  },
+  {
+    "vm_name": "Win11-1_ESXiVMroot",
+    "host_ip": "192.168.24.220",
+    "mac": "00:0c:29:3b:cb:25",
+    "method": "API",
+    "user": "root",
+    "type": "virtual"
   }
 ]

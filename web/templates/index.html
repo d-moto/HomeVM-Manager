@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeVM Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-server"></i> HomeVM Manager
+            </div>
+            <div class="clock" id="clock">00:00:00</div>
+        </header>
+
+        <main>
+            <div class="status-bar glass">
+                <div class="status-item">
+                    <span class="label">Total VMs</span>
+                    <span class="value" id="total-vms">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Running</span>
+                    <span class="value active" id="running-vms">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Stopped</span>
+                    <span class="value inactive" id="stopped-vms">0</span>
+                </div>
+            </div>
+
+            <div class="vm-grid" id="vm-grid">
+                <!-- VM Cards will be injected here -->
+            </div>
+        </main>
+
+        <button class="fab" onclick="openAddModal()">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Add VM Modal -->
+    <div class="modal-overlay" id="add-modal">
+        <div class="modal glass">
+            <h2>Add New VM</h2>
+            <form id="add-form">
+                <div class="form-group">
+                    <label>VM Name</label>
+                    <input type="text" name="vm_name" required>
+                </div>
+                <div class="form-group">
+                    <label>MAC Address</label>
+                    <input type="text" name="mac" placeholder="00:11:22:33:44:55" required>
+                </div>
+                <div class="form-group">
+                    <label>Host IP</label>
+                    <input type="text" name="host_ip" placeholder="192.168.x.x">
+                </div>
+                <div class="form-group">
+                    <label>Method</label>
+                    <select name="method">
+                        <option value="SSH">SSH</option>
+                        <option value="WinRM">WinRM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>User</label>
+                    <input type="text" name="user" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select name="type">
+                        <option value="virtual">Virtual</option>
+                        <option value="physical">Physical</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal-overlay" id="password-modal">
+        <div class="modal glass">
+            <h2>Authentication Required</h2>
+            <p id="pw-target-name"></p>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="pw-input">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closePwModal()">Cancel</button>
+                <button type="button" class="btn-submit" onclick="submitPassword()">Execute</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
